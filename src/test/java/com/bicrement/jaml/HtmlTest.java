@@ -14,14 +14,13 @@ public class HtmlTest {
 	public void testForm() {
 		Tag form = form(
 				div(text("Username:"), input("text", name("username"))),
-				div(text("Password:"), input("password", name("password")))
-			);
+				div(text("Password:"), input("password", name("password"))));
 
-		String expected = "<form>" +
-				"<div>Username:<input type=\"text\" name=\"username\"/></div>" +
-				"<div>Password:<input type=\"password\" name=\"password\"/></div>" +
-				"</form>";
-		assertEquals(expected, form.getContent());
+		String expected = "<form>"
+				+ "<div>Username:<input type=\"text\" name=\"username\"/></div>"
+				+ "<div>Password:<input type=\"password\" name=\"password\"/></div>"
+				+ "</form>";
+		assertEquals(expected, form.toString());
 	}
 
 }

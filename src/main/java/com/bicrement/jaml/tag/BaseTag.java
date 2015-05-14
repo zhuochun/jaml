@@ -3,25 +3,29 @@ package com.bicrement.jaml.tag;
 import java.util.Collections;
 import java.util.List;
 
-import com.bicrement.jaml.content.PreparedDom;
-import com.bicrement.jaml.content.PreparedDom.Builder;
+import com.bicrement.jaml.cache.PreparedTag;
+import com.bicrement.jaml.cache.PreparedTag.Builder;
 
+/**
+ * Represents a generic tag.
+ * 
+ * @author zhuochun
+ *
+ */
 public class BaseTag implements Tag {
 
 	private final String name;
 	private final List<Attribute> attributes;
 	private final List<Tag> childElems;
 
+	public BaseTag(String name, List<Attribute> attrs) {
+		this(name, attrs, Collections.emptyList());
+	}
+
 	public BaseTag(String name, List<Attribute> attrs, List<Tag> childElems) {
 		this.name = name;
 		this.attributes = attrs;
 		this.childElems = childElems;
-	}
-
-	public BaseTag(String name, List<Attribute> attrs) {
-		this.name = name;
-		this.attributes = attrs;
-		this.childElems = Collections.emptyList();
 	}
 
 	@Override
@@ -38,58 +42,45 @@ public class BaseTag implements Tag {
 	public List<Tag> getChildElements() {
 		return childElems;
 	}
-	
+
 	private boolean isSelfClosed() {
 		return childElems.isEmpty();
 	}
 
 	@Override
-	public String getContent() {
-		return getContent(new StringBuilder()).toString();
+	public BaseText getHtml() {
+		return prepare().bind().getHtml();
+	}
+
+	@Override
+	public PreparedTag prepare() {
+		return prepare(new Builder(this)).build();
+	}
+
+	@Override
+	public Builder prepare(Builder builder) {
+		builder.add("<", name);
+
+		attributes.forEach(attr -> attr.prepare(builder.add(" ")));
+
+		if (isSelfClosed()) {
+			return builder.add("/>");
+		}
+		builder.add(">");
+
+		childElems.forEach(e -> e.prepare(builder));
+
+		return builder.add("</", name, ">");
 	}
 
 	@Override
 	public String toString() {
-		return getContent();
+		return prepare().toString();
 	}
 
 	@Override
-	public StringBuilder getContent(StringBuilder sb) {
-		sb.append("<").append(name);
-
-		attributes.forEach(attr -> sb.append(" ").append(attr));
-
-		if (isSelfClosed()) {
-			return sb.append("/>");
-		}
-		sb.append(">");
-
-		childElems.forEach(e -> e.getContent(sb));
-
-		return sb.append("</").append(name).append(">");
-	}
-
-	@Override
-	public PreparedDom prepare() {
-		PreparedDom.Builder builder = new Builder();
-		
-		builder.add("<", name);
-
-		attributes.forEach(attr -> builder.add(" ").add(attr.prepare()));
-
-		if (isSelfClosed()) {
-			return builder.add("/>").build();
-		}
-		builder.add(">");
-		
-		childElems.forEach(e -> builder.add(e.prepare()));
-
-		return builder.add("</", name, ">").build();
-	}
-	
-	@Override
-	public Text persist() {
-		return prepare().bind().toHtml();
+	public StringBuilder toString(StringBuilder sb) {
+		return prepare().toString(sb);
 	}
 
 }

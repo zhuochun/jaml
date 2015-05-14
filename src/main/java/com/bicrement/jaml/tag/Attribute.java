@@ -1,49 +1,68 @@
 package com.bicrement.jaml.tag;
 
-import com.bicrement.jaml.content.BindMarker;
-import com.bicrement.jaml.content.PreparedDom;
-import com.bicrement.jaml.content.PreparedDom.Builder;
+import com.bicrement.jaml.cache.PreparedTag;
 
-public class Attribute {
+/**
+ * Represent an attribute
+ * 
+ * @author zhuochun
+ *
+ */
+public class Attribute implements Text {
 
 	private final String name;
-	private final Object value;
+	private final Text value;
 
 	public Attribute(String name, String value) {
+		this.name = name;
+		this.value = new BaseText(value);
+	}
+
+	public Attribute(String name, Text value) {
 		this.name = name;
 		this.value = value;
 	}
 
-	public Attribute(String name, BindMarker marker) {
-		this.name = name;
-		this.value = marker;
-	}
-
-	public String name() {
+	public String getName() {
 		return name;
 	}
 
-	public Object value() {
+	public Object getValue() {
 		return value;
 	}
-	
+
+	@Override
+	public Attribute htmlSafe() {
+		value.htmlSafe();
+		return this;
+	}
+
+	@Override
+	public boolean isHtmlSafe() {
+		return value.isHtmlSafe();
+	}
+
 	public String getContent() {
 		return getContent(new StringBuilder()).toString();
 	}
-	
+
 	public StringBuilder getContent(StringBuilder sb) {
 		return sb.append(name).append("=\"").append(value).append("\"");
-	}
-	
-	PreparedDom prepare() {
-		PreparedDom.Builder builder = new Builder();
-		builder.add(name, "=\"", value, "\"");
-		return builder.build();
 	}
 
 	@Override
 	public String toString() {
 		return getContent();
+	}
+
+	/**
+	 * For internal usages
+	 * 
+	 * @param builder
+	 * @return
+	 */
+	public PreparedTag.Builder prepare(PreparedTag.Builder builder) {
+		return builder.add(name, "=\"", value, "\"");
 	}
 
 }
