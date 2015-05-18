@@ -1,13 +1,13 @@
 # Jaml (Java as a Markup Language)
 
-A basic HTML template engine in Java.
+Write fast HTML in Java!
 
 ## Example
 
 ### Pure HTML View
 
 ``` java
-div($$(id("login"), klass("login-dialog")), // $$ take attributes
+Tag login = div($$(id("login"), klass("login-dialog")), // $$ take attributes
     div($$(klass("login-header")),
         h1(text("Login"))
     ),
@@ -37,15 +37,16 @@ div($$(id("login"), klass("login-dialog")), // $$ take attributes
 ### Bindable HTML View
 
 ``` java
-PreparedDom userRow = tr(td(__), td(__), td(__)).prepare(); // __ is a bindMarker
+final Tag thead = thead(tr(th(text("Id")), th(text("Name")), th(text("Age"))));
 
-List<Tag> rows = new ArrayList<>(users.size());
-for (User user : users) {
-  rows.add(userRow.bind(user.id, user.name, user.age).toHtml());
+PreparedTag userRow = tr(td(__), td(__), td(__)).prepare(); // __ is a bindMarker
+Tag[] rows = new Tag[users.size()];
+for (int i = 0; i < users.size(); i++) {
+  User user = users.get(i);
+  rows[i] = userRow.bind(user.id, user.name, user.age);
 }
 
-Tag thead = thead(tr(th(text("Id")), th(text("Name")), th(text("Age"))));
-Tag table = table(thead, tbody(rows.toArray(new Tag[rows.size()])));
+Tag table = table(thead, tbody(rows));
 
 /* generates:
 <table>
