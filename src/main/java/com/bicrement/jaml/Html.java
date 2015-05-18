@@ -1,20 +1,20 @@
 package com.bicrement.jaml;
 
+import static com.bicrement.jaml.Attributes.*;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import static java.util.Collections.*;
-import static java.util.Arrays.*;
-
 import java.util.List;
+import java.util.Map;
 
 import com.bicrement.jaml.tag.Attribute;
 import com.bicrement.jaml.tag.BaseTag;
+import com.bicrement.jaml.tag.BaseText;
 import com.bicrement.jaml.tag.BindMarker;
 import com.bicrement.jaml.tag.Tag;
-import com.bicrement.jaml.tag.BaseText;
-
-import static com.bicrement.jaml.Attributes.*;
+import com.bicrement.jaml.tag.Text;
 
 /**
  * Shortcuts to create HTML {@link Tag}s.
@@ -104,6 +104,14 @@ public final class Html {
 	public static BaseTag p(List<Attribute> attrs, Tag... childElems) {
 		return new BaseTag("p", attrs, asList(childElems));
 	}
+	
+	public static BaseTag img(Text url) {
+		return new BaseTag("img", $$(src(url)));
+	}
+	
+	public static BaseTag figure(Text url) {
+		return new BaseTag("figure", emptyList(), asList(img(url)));
+	}
 
 	public static BaseTag span(Tag... childElems) {
 		return new BaseTag("span", emptyList(), asList(childElems));
@@ -113,8 +121,8 @@ public final class Html {
 		return new BaseTag("span", attrs, asList(childElems));
 	}
 
-	public static BaseTag a(Attribute href, Tag... childElems) {
-		return new BaseTag("a", Arrays.asList(href), asList(childElems));
+	public static BaseTag a(Text href, Tag... childElems) {
+		return new BaseTag("a", $$(href(href)), asList(childElems));
 	}
 
 	public static BaseTag a(List<Attribute> attrs, Tag... childElems) {

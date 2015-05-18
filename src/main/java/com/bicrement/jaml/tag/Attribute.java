@@ -8,7 +8,7 @@ import com.bicrement.jaml.cache.PreparedTag;
  * @author zhuochun
  *
  */
-public class Attribute implements Text {
+public class Attribute {
 
 	private final String name;
 	private final Text value;
@@ -31,13 +31,11 @@ public class Attribute implements Text {
 		return value;
 	}
 
-	@Override
 	public Attribute htmlSafe() {
 		value.htmlSafe();
 		return this;
 	}
 
-	@Override
 	public boolean isHtmlSafe() {
 		return value.isHtmlSafe();
 	}

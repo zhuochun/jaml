@@ -1,6 +1,7 @@
 package com.bicrement.jaml;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.bicrement.jaml.tag.Attribute;
@@ -21,6 +22,10 @@ public final class Attributes {
 	 * @return a list of {@link Attribute}
 	 */
 	public static List<Attribute> $$(Attribute... attributes) {
+		if (attributes.length == 0) {
+			return Collections.emptyList();
+		}
+
 		return Arrays.asList(attributes);
 	}
 
@@ -53,6 +58,10 @@ public final class Attributes {
 
 	public static Attribute href(Object value) {
 		return attr("href", value);
+	}
+
+	public static Attribute src(Object value) {
+		return attr("src", value);
 	}
 
 	public static Attribute name(Object value) {
